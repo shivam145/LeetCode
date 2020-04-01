@@ -1,0 +1,38 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    vector<int> postorderTraversal(TreeNode* root) {
+        vector<int> result;
+        stack<TreeNode*> st;
+        unordered_set<TreeNode*> umap;
+        while(root!=NULL || !st.empty())
+        {
+            if(root)
+            {
+                st.push(root);
+                root = root->left;
+            }
+            else
+            {
+                TreeNode *temp = st.top();
+                if(!(temp->right) || ((temp->right) && umap.find(temp->right)!=umap.end()))
+                {
+                    umap.insert(temp);
+                    result.push_back(temp->val);
+                    st.pop();
+                }
+                else
+                    root = temp->right;
+            }
+        }
+        return result;
+    }
+};
