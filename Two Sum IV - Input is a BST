@@ -1,0 +1,38 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void inorderTraversal(TreeNode* root,vector<int> &result)
+    {
+        if(!root)
+            return;
+        inorderTraversal(root->left,result);
+        result.push_back(root->val);
+        inorderTraversal(root->right,result);
+    }
+    bool findTarget(TreeNode* root, int k) {
+        
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        vector<int> result;
+        inorderTraversal(root,result);
+        int low = 0,high = result.size()-1;
+        while(low < high)
+        {
+            if(result[low] + result[high] == k)
+                return true;
+            else if(result[low] + result[high] < k)
+                low++;
+            else
+                high--;
+        }
+        return false;
+    }
+};
