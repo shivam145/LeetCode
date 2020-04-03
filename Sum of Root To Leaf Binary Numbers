@@ -1,0 +1,93 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void DFS(TreeNode* root,vector<string> &result, string s)
+    {
+        if(!root)
+            return;
+        
+        if(!root->left && !root->right)
+        {
+            s+=to_string(root->val);
+            result.push_back(s);
+            s.pop_back();
+        }
+        
+        s+=to_string(root->val);
+        DFS(root->left,result,s);
+        s.pop_back();
+        s+=to_string(root->val);
+        DFS(root->right,result,s);
+        s.pop_back();
+    }
+    int sumRootToLeaf(TreeNode* root) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        vector<string> result;
+        string s;
+        DFS(root,result,s);
+        int sum=0;
+        for(int i=0;i<result.size();i++)
+        {
+            int temp=0;
+            for(int j=0;j<result[i].size();j++)
+            {
+                temp = temp + (result[i][j] - '0') * pow(2,result[i].size() - j - 1);
+            }
+            sum += temp;
+        }
+        return sum;
+    }
+};
+
+
+
+
+// Solution without using any extra space
+------------------------------------------------------------------------
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    void DFS(TreeNode* root,int &result,int temp,int &counter)
+    {
+        if(!root)
+            return;
+        
+        if(counter)
+            temp = temp*2 + root->val;
+        counter++;
+        if(!root->left && !root->right)
+        {
+            result+=temp;
+            return;
+        }
+        
+        
+        DFS(root->left,result,temp,counter);
+        DFS(root->right,result,temp,counter);
+    }
+    int sumRootToLeaf(TreeNode* root) {
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        int result=0,temp=root->val,counter=0;
+        DFS(root,result,temp,counter);
+        return result;
+    }
+};
