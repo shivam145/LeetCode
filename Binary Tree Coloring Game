@@ -1,0 +1,57 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    
+    int DFS(TreeNode* root)
+    {
+        if(!root)
+            return 0;
+        
+        int left = DFS(root->left);
+        int right = DFS(root->right);
+        return left + right + 1;
+        
+    }
+    
+    bool btreeGameWinningMove(TreeNode* root, int n, int x) {
+        
+        if(!root)
+            return true;
+        int count1=0 ,count2=0;
+        stack<TreeNode*> st;
+        while(root || !st.empty()) {
+            
+            if(root) {
+                
+                if(root->val == x) {
+                    count1 = DFS(root->left);
+                    count2 = DFS(root->right);
+                    break;
+                }
+                st.push(root);
+                root = root->left;
+            }
+            else {
+                
+                TreeNode *temp = st.top();
+                st.pop();
+                root = temp->right;
+                
+            }
+        }
+        
+        int count3 = n - count1 - count2 - 1;
+        //cout<<count1<<" "<<count2<<" "<<count3<<endl;
+        if(count3 > count1 + count2 + 1 || count2 > count1 + count3 + 1 || count1 > count2 + count3 + 1)
+            return true;
+        return false;
+    }
+};
