@@ -1,0 +1,45 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+#define ll long long
+#define pp pair<pair<ll,ll>,bool>
+class Solution {
+public:
+     pp solve(TreeNode* root) {
+        
+         if(!root) {
+            
+             pp temp = {{1e11,-1e11},true};
+             return temp;
+         }
+         
+         pp left = solve(root->left);
+         pp right = solve(root->right);
+        
+         pp self;
+         ll value = root->val;
+         if(left.second && right.second && left.first.second < value && right.first.first > value) {
+             self.second = true;
+             self.first.first = min(left.first.first,min(right.first.first,value));
+             self.first.second = max(left.first.second,max(right.first.second,value));
+         }
+         else {
+             self.second = false;
+         }
+         return self;
+         
+         
+    }
+    bool isValidBST(TreeNode* root) {
+        
+        ios_base::sync_with_stdio(false);
+        cin.tie(NULL);
+        return solve(root).second;
+    }
+};
