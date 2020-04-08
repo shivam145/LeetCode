@@ -1,0 +1,72 @@
+class Solution {
+public:
+    void DFS(int i, int j , vector<vector<char>> &board , vector<vector<bool>> &visited,int flag) {
+        
+        if(i<0 || j < 0 || i == board.size() || j == board[0].size())
+            return;
+        
+        if(visited[i][j] || board[i][j] == 'X')
+            return;
+        
+        visited[i][j] = true;
+        
+        if(board[i][j] == 'O' && flag == 1)
+            board[i][j] = 'X';
+        else if(board[i][j] == 'O' && flag == 0)
+            board[i][j] = '$';
+        
+        DFS(i+1,j,board,visited,flag);
+        DFS(i-1,j,board,visited,flag);
+        DFS(i,j+1,board,visited,flag);
+        DFS(i,j-1,board,visited,flag);
+            
+    }
+    void solve(vector<vector<char>>& board) {
+        
+        if(board.empty())
+            return;
+        
+        vector<vector<bool>> visited(board.size(),vector<bool>(board[0].size(),false));
+        int counter = 0;
+        
+        // traversing on the boundary and converting all group of O's to 1's(as O's on boundaries can never be captured)
+        for(int i = 0 ; i < board.size() ; i++) {
+            
+            for(int j = 0 ; j < board[0].size() ; j++) {
+                
+                if(i == 0 || j == 0 || i == board.size() - 1 || j == board[0].size() - 1) {
+                
+                    DFS(i,j,board,visited,0);
+                }
+            }
+            
+        }
+        
+        // traversing the O's present on non boundary area of the board and counting how many islands 
+        for(int i = 0; i < board.size() ; i++) {
+            
+           for(int j = 0 ; j < board[0].size() ; j++) {
+                
+                    if(board[i][j] == 'O' && !visited[i][j]) {
+                        
+                        DFS(i,j,board,visited,1);
+            
+                    }
+                    
+            }
+        }
+        for(int i = 0; i < board.size() ; i++) {
+            
+           for(int j = 0 ; j < board[0].size() ; j++) {
+                
+                    if(board[i][j] == '$') {
+                        
+                        board[i][j] = 'O';
+            
+                    }
+                    
+            }
+        }
+        
+    }
+};
