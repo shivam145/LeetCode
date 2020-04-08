@@ -1,0 +1,156 @@
+// brute force approach of O(V^2)
+class Solution {
+public:
+    void DFS(int i, int j , vector<vector<int>> &A, vector<pair<int,int>> &coordinates) {
+        
+        if(i < 0 || j < 0 ||  i == A.size() || j == A[0].size()) 
+            return;
+        
+        if(A[i][j] == 0 || A[i][j] == 2)
+            return;
+        if(A[i][j] == 1) {
+             
+            coordinates.push_back({i,j});
+            A[i][j] = 2;
+        }
+       
+        
+        DFS(i+1,j,A,coordinates);
+        DFS(i-1,j,A,coordinates);
+        DFS(i,j+1,A,coordinates);
+        DFS(i,j-1,A,coordinates);
+        
+    }
+    int shortestBridge(vector<vector<int>>& A) {
+        
+        vector<pair<int,int>> coordinates1,coordinates2;
+        
+        int counter = 0;
+        for(int i = 0; i < A.size() ; i++) {
+            for(int j = 0; j < A[0].size() ; j++) {
+                
+                if(A[i][j] == 1 && counter == 0) {
+                    counter++;   
+                    DFS(i,j,A,coordinates1);
+                }
+                else if(A[i][j] == 1 && counter == 1) {
+                    
+                    counter++;
+                    DFS(i,j,A,coordinates2);
+                }
+                else if(counter>1)
+                    break;
+                    
+            }
+        }
+        
+        
+        
+        int result = INT_MAX;
+        //cout<<coordinates1.size()<<" "<<coordinates2.size()<<endl;
+        for(int i = 0 ; i < coordinates1.size() ; i++) {
+            
+            for(int j = 0 ; j < coordinates2.size() ; j++) {
+                
+                int u1 = coordinates1[i].first;
+                int v1 = coordinates1[i].second;
+                int u2 = coordinates2[j].first;
+                int v2 = coordinates2[j].second;
+                
+                //cout<<u1<<" "<<v1<<" "<<u2<<" "<<v2<<endl;
+                result = min(result , abs(u1 - u2) + abs(v1 - v2) - 1);
+            }
+        }
+        return result;
+    }
+};
+
+
+------------------------------------------------------------------------
+// optimized approach of O(V+E)
+
+class Solution {
+public:
+    void DFS(int i, int j , vector<vector<int>> &A) {
+        
+        if(i < 0 || j < 0 ||  i == A.size() || j == A[0].size()) 
+            return;
+        
+        if(A[i][j] == 0 || A[i][j] == -1)
+            return;
+        
+        if(A[i][j] == 1) {
+             
+            A[i][j] = -1;
+        }
+       
+        
+        DFS(i+1,j,A);
+        DFS(i-1,j,A);
+        DFS(i,j+1,A);
+        DFS(i,j-1,A);
+        
+    }
+    int shortestBridge(vector<vector<int>>& A) {
+        
+       
+        
+        int flag = 0;
+        for(int i = 0; i < A.size() ; i++) {
+            for(int j = 0; j < A[0].size() ; j++) {
+                
+                if(A[i][j] == 1) { 
+                    DFS(i,j,A);
+                    flag = 1;
+                    break;
+                }   
+            }
+            if(flag == 1)
+                break;
+        }
+        
+        
+        
+        
+        int result = INT_MAX;
+        queue<pair<pair<int,int>,int>> q;
+        for(int i = 0; i < A.size() ; i++) {
+            
+            for(int j = 0; j < A[0].size() ; j++) {
+                
+                if(A[i][j] == 1)
+                    q.push({{i,j},0});
+            }
+        }
+        
+        vector<int> x = {1,-1,0,0} , y = {0,0,1,-1};
+        
+        while(!q.empty()) {
+            
+            pair<pair<int,int>,int> temp = q.front();
+            q.pop();
+            
+            int u = temp.first.first;
+            int v = temp.first.second;
+            int w = temp.second;
+            
+            for(int i = 0; i < 4 ; i++) {
+                
+                int curr_x = u + x[i];
+                int curr_y = v + y[i];
+                if(curr_x >=0 && curr_x < A.size() && curr_y >=0 && curr_y < A[0].size()) {
+                    
+                    if(A[curr_x][curr_y] == 0) {
+                        q.push({{curr_x,curr_y}, w + 1});
+                        A[curr_x][curr_y] = 1;
+                    }
+                    else if(A[curr_x][curr_y] == -1) {
+                        result = min(result,w);
+                    }
+                } 
+            }
+            
+        }
+        return result;
+    }
+};
