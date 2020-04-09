@@ -1,0 +1,69 @@
+class Solution {
+public:
+    
+    // building the adjacency list of the graph
+    void buildGraph(vector<vector<int>> &graph , vector<vector<int>> &edges) {
+        
+        for(int  i = 0 ; i < edges.size() ; i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            
+            graph[u].push_back(v);
+            graph[v].push_back(u);
+        }
+    }
+    
+    // finding indegree of each node
+    void findIndegree(vector<int> &indegree , vector<vector<int>> &graph , queue<int> &q) {
+        
+        for(int i = 0 ; i < graph.size() ; i++) {
+            
+            indegree[i] = graph[i].size();
+            
+            if(indegree[i] == 1)
+                q.push(i);
+        }
+    }
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+        if(n==1)
+            return {0};
+        
+        vector<vector<int>> graph(n);
+        vector<int> indegree(n);
+        queue<int> q;
+        vector<int> result;
+        
+        buildGraph(graph,edges);
+        findIndegree(indegree,graph,q);
+        
+        // run until we trim all the leaf , so atlast we will have either 1 or 2 nodes left
+        
+        while(n > 2) {
+            
+            int leafCount = q.size();
+            n =  n - leafCount;
+            
+            while(leafCount--) {
+                int currNode = q.front();
+                q.pop();
+                
+                // we decrease the indegree of the nodes which are adjacent to leaf, as when we delete the respective leaf 
+                // nodes which are present in the queue , then the nodes adjacent to these leaf will become new leaf nodes 
+                
+                for(int i = 0 ; i < graph[currNode].size() ; i++) {
+                    
+                    if(--indegree[graph[currNode][i]] == 1) {
+                        q.push(graph[currNode][i]);
+                    } 
+                
+                }
+            }
+        }
+        
+        while(!q.empty()) {
+            result.push_back(q.front());
+            q.pop();
+        }
+        return result;
+    }
+};
