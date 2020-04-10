@@ -1,0 +1,54 @@
+class Solution {
+public:
+    
+    int find(int i, vector<int> &parent) {
+        
+        if(i == parent[i])
+            return i;
+        
+        return find(parent[i],parent);
+    }
+    void _union(int i ,int j,vector<int> &parent, vector<int> &rank) {
+        
+        int rooti = find(i,parent);
+        int rootj = find(j,parent);
+        
+        if(rooti == rootj)
+            return;
+        
+        if(rank[rooti] == rank[rootj]) {
+            
+            parent[rooti] = rootj;
+            rank[rootj]++;
+        }
+        else if(rank[rooti] > rank[rootj]) 
+            parent[rootj] = rooti;
+        else
+            parent[rooti] = rootj;
+    }
+    int findCircleNum(vector<vector<int>>& M) {
+        vector<int> parent(M.size()),rank(M.size(),0);
+        for(int i = 0 ; i < M.size() ; i++) {
+            parent[i] = i;
+        }
+        
+        for(int i = 0 ; i < M.size() ; i++) {
+            
+            for(int j = 0 ; j < M[0].size() ; j++) {
+                
+                if(M[i][j] == 1) {
+                    
+                    _union(i,j,parent,rank);
+                }
+            }
+        }
+        
+        int counter = 0;
+        for(int i = 0 ; i < parent.size() ; i++) {
+            
+            if(parent[i] == i)
+                counter++;
+        }
+        return counter;
+    }
+};
