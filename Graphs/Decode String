@@ -1,0 +1,44 @@
+class Solution {
+public:
+    
+    bool isDigit(char i) {
+        
+        return i >= '0' && i <= '9';
+    }
+    string decodeString(string s) {
+        
+        stack<pair<int,string>> st;
+        st.push(make_pair(1,""));
+        int freq = 0 ;
+        for(int i = 0 ; i < s.length() ; i++) {
+            
+            if(isDigit(s[i])) {
+                
+                freq = freq * 10 + (s[i]-'0');
+            }
+            
+            else if(s[i] == '[') {
+                st.push(make_pair(freq,""));
+                freq = 0;
+            }
+            
+            else if(s[i] == ']') {
+                
+                string temp = st.top().second;
+                int counter = st.top().first;
+                
+                st.pop();
+                for(int j = 0 ; j < counter ; j++) 
+                    st.top().second.append(temp);
+                
+            }
+            
+            else {
+                
+                st.top().second += s[i];
+                
+            }
+        }
+        return st.top().second;
+    }
+};
