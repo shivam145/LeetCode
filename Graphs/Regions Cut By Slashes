@@ -1,3 +1,15 @@
+We are dividing each square cell into further 4 triangle
+
+ -----------
+| \   0   / |
+|   \   /   |
+| 1   \   2 |
+|  /    \   |
+|/    3   \ |
+ -----------
+as shown above , we have 4 traingle inside each square, and we find union if they are not cut into pieces
+
+
 class Solution {
 public:
     int find(int i,vector<int> &parent) {
