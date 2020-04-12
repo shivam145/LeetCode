@@ -1,0 +1,47 @@
+class Solution {
+public:
+    vector<vector<int>> updateMatrix(vector<vector<int>>& matrix) {
+        queue<pair<pair<int,int>,int>> q;
+        vector<vector<int>> visited(matrix.size(),vector<int>(matrix[0].size(),0)) ,distance = visited;
+        
+        for(int i = 0 ; i < matrix.size() ; i++) {
+            
+            for(int j = 0 ; j < matrix[0].size() ;j++) {
+                if(matrix[i][j] == 0) {
+                    q.push({{i , j} , 0});
+                    visited[i][j] = 1;
+                }
+               
+            }
+        }
+        
+        vector<int> x = {1,-1,0,0} , y = {0 , 0 ,1 , -1};
+        while(!q.empty()) {
+            
+            pair<pair<int,int>,int> node = q.front();
+            q.pop();
+            
+            for(int  i = 0 ; i < 4 ; i++) {
+                
+                int currX = node.first.first + x[i];
+                int currY = node.first.second + y[i];
+                int currW = node.second + 1;
+                if(currX>=0 && currX < matrix.size() && currY >=0 && currY < matrix[0].size() && visited[currX][currY] == 0) {
+                    if(matrix[currX][currY] == 0) {
+                        
+                            q.push({{currX,currY},currW});
+                    }
+                    else {
+                        
+                            distance[currX][currY] = currW ;
+                            q.push({{currX,currY} , currW});
+                            
+                    }
+                    visited[currX][currY]  = 1;
+                }
+            }
+            
+        }
+        return distance;
+    }
+};
