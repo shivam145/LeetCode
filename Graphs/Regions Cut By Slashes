@@ -1,0 +1,73 @@
+class Solution {
+public:
+    int find(int i,vector<int> &parent) {
+        
+        if(i == parent[i])
+            return i;
+        
+        return find(parent[i],parent);
+    }
+    void _union(int i , int j,vector<int> &parent ,vector<int> &size) {
+        
+        int rooti = find(i,parent);
+        int rootj = find(j,parent);
+        
+        if(rooti == rootj) 
+            return;
+        
+        if(size[rooti] > size[rootj]) {
+            size[rooti] += size[rootj];
+            parent[rootj] = rooti;
+        }
+        else {
+            size[rootj] += size[rooti];
+            parent[rooti] = rootj;
+        }
+            
+    }
+    int regionsBySlashes(vector<string>& grid) {
+     
+        int n = grid.size() , m = grid[0].length();
+        
+        vector<int> parent(n*m*4) , size(n*m*4,1);
+        for(int i = 0 ; i < n * n * 4 ; i++) {
+            parent[i] = i;
+        }
+        
+        
+        for(int i = 0 ; i < grid.size() ; i++) {
+            
+            for(int j = 0 ; j < grid[i].length() ; j++) {
+                
+                int root = (i * m * 4) + (j * 4) ;
+                if(grid[i][j] != '\\') {
+                    
+                    _union(root + 2 ,root + 3,parent,size);
+                    _union(root,root + 1,parent,size);
+                    
+                }
+                if(grid[i][j] != '/') {
+                    
+                    _union(root , root + 2,parent,size);
+                    _union(root + 1 , root + 3,parent,size);
+                }
+                
+                if(j + 1 < m ) {
+                    
+                    _union(root + 2 , root + 4 + 1,parent,size);
+                }
+                
+                if(i + 1 < n) {
+                    _union(root + 3 , root +  3  +  (m - 1 ) * 4  + 1,parent,size);
+                }
+            }
+        }
+        
+        int counter = 0 ;
+        for(int i = 0 ; i < parent.size() ; i++) {
+            if(parent[i] == i)
+                counter++;
+        }
+        return counter;
+    }
+};
