@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int maxEqualRowsAfterFlips(vector<vector<int>>& matrix) {
+        unordered_map<string , int> umap;
+        int result = 0;
+        for(int i = 0 ; i < matrix.size() ; i++) {
+            
+            int element = matrix[i][0];
+            for(int j = 0 ; j < matrix[0].size() ; j++) {
+                
+                matrix[i][j] ^= element;
+            }
+            string hash;
+            for(int j = 0 ; j < matrix[0].size() ; j++) {
+                
+                hash.push_back(matrix[i][j] == 1 ? '1' : '0');
+            }
+            umap[hash]++;
+            result = max(result,int(umap[hash]));
+        }
+        return result;
+    }
+};
