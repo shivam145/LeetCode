@@ -1,0 +1,29 @@
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int index1 = -1, index2 = -1;
+        for(int i = nums.size() - 2 ; i >=0 ; i--) {
+
+            if(nums[i] < nums[i+1]) {
+                index1 = i;
+                i = i + 1;
+                int mini = INT_MAX;
+                while(i < nums.size()) {
+                    if(abs(nums[index1] - nums[i]) <= mini && nums[i] > nums[index1]) {
+                        
+                        mini =  abs(nums[index1] - nums[i]) ;
+                        index2 = i;
+                    }
+                    i++;
+                }    
+                if(index2!=-1) {
+                    swap(nums[index1] , nums[index2]);
+                    break;
+                }
+                    
+            }  
+            
+        }
+        reverse(nums.begin() + index1 + 1 , nums.end());
+    }
+};
